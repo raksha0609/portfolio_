@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Playfair Display', 'serif'],
+        display: ['Space Grotesk', 'sans-serif'],
         body: ['Inter', 'sans-serif'],
         mono: ['JetBrains Mono', 'monospace'],
       },
@@ -82,8 +82,8 @@ export default {
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px hsl(210 60% 55% / 0.1)" },
-          "50%": { boxShadow: "0 0 40px hsl(210 60% 55% / 0.3)" },
+          "0%, 100%": { boxShadow: "0 0 20px hsl(172 70% 46% / 0.1)" },
+          "50%": { boxShadow: "0 0 40px hsl(172 70% 46% / 0.3)" },
         },
         "float": {
           "0%, 100%": { transform: "translateY(0)" },
@@ -96,6 +96,7 @@ export default {
         "fade-in-up": "fade-in-up 0.6s ease-out forwards",
         "pulse-glow": "pulse-glow 3s ease-in-out infinite",
         "float": "float 6s ease-in-out infinite",
+        "spin-slow": "spin 12s linear infinite",
       },
     },
   },

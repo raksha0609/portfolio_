@@ -1,95 +1,76 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { GraduationCap } from "lucide-react";
-
-const education = [
-  {
-    degree: "Master of AI & Data Science",
-    school: "Technische Hochschule Deggendorf, Germany",
-    period: "Expected Nov 2026",
-    note: "Double degree program",
-  },
-  {
-    degree: "Master of AI & Data Science",
-    school: "University of South Bohemia, Czech Republic",
-    period: "Expected Nov 2026",
-    note: "Double degree program",
-  },
-  {
-    degree: "Bachelor of Engineering: ECE",
-    school: "Jawaharlal Nehru College of Engineering, India",
-    period: "July 2022",
-    note: "OOP, Embedded Systems, Cloud Tools",
-  },
-];
-
-const certifications = [
-  "LangChain for LLM Applications",
-  "AI Architecture Fundamentals",
-  "Python for Machine Learning",
-  "TensorFlow & Keras Introduction",
-];
+import { GraduationCap, MapPin } from "lucide-react";
+import SectionHeading from "./SectionHeading";
+import { handleSpotlight } from "@/lib/spotlight";
 
 const EducationSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section id="education" className="section-padding bg-background" ref={ref}>
-      <div className="max-w-5xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-        >
-          <p className="text-primary font-mono text-sm mb-2 tracking-widest uppercase">Learning</p>
-          <h2 className="text-3xl md:text-4xl font-bold font-display mb-12 text-foreground">
-            Education & Certifications
-          </h2>
-        </motion.div>
+    <section id="education" className="section-padding relative" ref={ref}>
+      <div className="max-w-6xl mx-auto">
+        <SectionHeading index="05" label="Education" title="Academic background" inView={isInView} />
 
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* Education */}
-          <div className="space-y-6">
-            {education.map((edu, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                animate={isInView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="p-6 rounded-xl bg-card border border-border card-elevated"
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                    <GraduationCap size={20} className="text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-foreground mb-1">{edu.degree}</h3>
-                    <p className="text-sm text-muted-foreground mb-1">{edu.school}</p>
-                    <p className="text-xs text-primary font-mono">{edu.period}</p>
-                    {edu.note && <p className="text-xs text-muted-foreground mt-2 italic">{edu.note}</p>}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Certifications */}
+        <div className="grid lg:grid-cols-[1.6fr_1fr] gap-5">
+          {/* Dual degree */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="p-6 rounded-xl bg-card border border-border card-elevated"
+            onMouseMove={handleSpotlight}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="spotlight relative overflow-hidden p-6 sm:p-8 rounded-2xl border border-primary/25 bg-gradient-to-br from-primary/[0.08] via-card/70 to-card/70 card-elevated"
           >
-            <h3 className="text-primary font-mono text-sm font-semibold mb-6">Certifications</h3>
-            <div className="space-y-4">
-              {certifications.map((cert, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                  <span className="text-sm text-muted-foreground">{cert}</span>
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-primary">
+                <GraduationCap size={16} /> Dual Degree Programme
+              </span>
+              <span className="font-mono text-xs sm:text-sm text-foreground/80 px-3 py-1 rounded-full border border-border bg-background/60">
+                Expected Mar 2027
+              </span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold text-foreground mb-6 leading-tight">
+              M.Sc. Artificial Intelligence <span className="text-gradient">& Data Science</span>
+            </h3>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {[
+                { school: "Technische Hochschule Deggendorf", country: "Germany" },
+                { school: "University of South Bohemia", country: "Czech Republic" },
+              ].map(({ school, country }) => (
+                <div key={school} className="p-4 rounded-xl border border-border bg-background/60">
+                  <p className="font-semibold text-foreground">{school}</p>
+                  <p className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+                    <MapPin size={12} className="text-primary" /> {country}
+                  </p>
                 </div>
               ))}
             </div>
+          </motion.div>
+
+          {/* Bachelor's */}
+          <motion.div
+            onMouseMove={handleSpotlight}
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="spotlight flex flex-col p-6 sm:p-8 rounded-2xl border border-border bg-card/70 card-elevated"
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+              <span className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-muted-foreground">
+                <GraduationCap size={16} /> Bachelor's
+              </span>
+              <span className="font-mono text-xs sm:text-sm text-foreground/80 px-3 py-1 rounded-full border border-border bg-background/60">
+                Jul 2022
+              </span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-3 leading-tight">
+              B.E. Electronics and Communication
+            </h3>
+            <p className="font-semibold text-foreground/90">Jawaharlal Nehru College of Engineering</p>
+            <p className="flex items-center gap-1 text-sm text-muted-foreground mt-1">
+              <MapPin size={12} className="text-primary" /> India
+            </p>
           </motion.div>
         </div>
       </div>

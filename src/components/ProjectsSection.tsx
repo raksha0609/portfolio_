@@ -1,16 +1,29 @@
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { Brain, Code, Paintbrush, Shield, Dna, Eye, ExternalLink, ArrowUpRight } from "lucide-react";
+import { useRef } from "react";
+import { Brain, Code, Paintbrush, Shield, Dna, Eye, Network, ArrowUpRight } from "lucide-react";
+import SectionHeading from "./SectionHeading";
+import { handleSpotlight } from "@/lib/spotlight";
 
 const projects = [
   {
-    title: "AFFAIR",
-    subtitle: "A Framework for Arbitrary Image Registration",
-    description: "Master's Thesis — Advanced image registration framework using deep learning techniques.",
-    icon: Brain,
-    tags: ["Deep Learning", "Computer Vision", "Research"],
+    title: "Stability of Transformer",
+    subtitle: "Embedding Map Stability Under Corpus Updates",
+    description: "Studies how stable transformer-based document maps are when the corpus is updated, using arXiv abstracts and university publications.",
+    icon: Network,
+    tags: ["Transformers", "Embeddings", "Clustering"],
     link: "#",
     comingSoon: true,
+    research: true,
+  },
+  {
+    title: "AFFAIR",
+    subtitle: "A Framework for Arbitrary Image Registration",
+    description: "Advanced image registration framework using deep learning techniques.",
+    icon: Brain,
+    tags: ["Deep Learning", "Computer Vision", "Research"],
+    link: "https://github.com/raksha0609/affair-mosaic",
+    comingSoon: false,
+    research: true,
   },
   {
     title: "DevPrompter",
@@ -59,78 +72,79 @@ const projects = [
   },
 ];
 
+// 6-column grid on desktop: 2 wide research cards, then 3, then 2 — no orphan card.
+const spanClass = (i: number) => {
+  if (i < 2) return "lg:col-span-3";
+  if (i < 5) return "lg:col-span-2";
+  return i === projects.length - 1 ? "lg:col-span-3 md:col-span-2" : "lg:col-span-3";
+};
+
 const ProjectsSection = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section id="projects" className="section-padding bg-card" ref={ref}>
+    <section id="projects" className="section-padding relative" ref={ref}>
       <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <p className="text-primary text-sm mb-2 tracking-widest uppercase font-medium">Portfolio</p>
-          <h2 className="text-3xl md:text-5xl font-bold font-display mb-4 text-foreground">
-            Personal Projects
-          </h2>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            A collection of my work in AI, computer vision, and software engineering.
-          </p>
-        </motion.div>
+        <SectionHeading
+          index="03"
+          label="Projects"
+          title="Personal projects"
+          subtitle="Research and hands-on builds in AI, computer vision, NLP and data analysis."
+          inView={isInView}
+        />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-6 gap-5">
           {projects.map((project, i) => {
             const Icon = project.icon;
+            const clickable = !project.comingSoon;
             return (
               <motion.a
                 key={project.title}
-                href={project.comingSoon ? undefined : project.link}
-                target={project.comingSoon ? undefined : "_blank"}
-                rel={project.comingSoon ? undefined : "noopener noreferrer"}
+                id={project.title.toLowerCase().replace(/[^a-z0-9]+/g, "-")}
+                href={clickable ? project.link : undefined}
+                target={clickable ? "_blank" : undefined}
+                rel={clickable ? "noopener noreferrer" : undefined}
+                onMouseMove={handleSpotlight}
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: i * 0.1 }}
-                onMouseEnter={() => setHoveredIndex(i)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className={`group relative p-6 rounded-2xl bg-background border border-border hover:border-primary/40 transition-all duration-300 card-elevated ${project.comingSoon ? 'cursor-default' : 'cursor-pointer'}`}
-                style={{
-                  transform: hoveredIndex === i ? 'translateY(-4px)' : 'translateY(0)',
-                  transition: 'transform 0.3s ease, border-color 0.3s ease',
-                }}
+                transition={{ duration: 0.4, delay: i * 0.07 }}
+                className={`${spanClass(i)} spotlight group relative flex flex-col scroll-mt-24 target:border-primary target:ring-2 target:ring-primary/40 p-6 rounded-2xl border border-border bg-card/70 hover:border-primary/40 transition-all duration-300 card-elevated ${
+                  clickable ? "cursor-pointer hover:-translate-y-1" : "cursor-default"
+                } ${project.research ? "bg-gradient-to-br from-primary/[0.07] to-card/70" : ""}`}
               >
-                {/* Gradient top bar */}
-                <div className="absolute top-0 left-6 right-6 h-[2px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'var(--gradient-primary)' }} />
+                <div className="absolute top-0 left-6 right-6 h-[2px] rounded-full bg-gradient-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                <div className="flex items-start justify-between mb-4">
+                <div className="flex items-start justify-between mb-5">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                     <Icon size={22} className="text-primary" />
                   </div>
-                  {project.comingSoon ? (
-                    <span className="text-[10px] uppercase tracking-wider text-muted-foreground border border-border rounded-full px-2 py-0.5">
-                      Soon
-                    </span>
-                  ) : (
-                    <ArrowUpRight
-                      size={18}
-                      className="text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
-                    />
-                  )}
+                  <div className="flex items-center gap-2">
+                    {project.research && (
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-accent border border-accent/30 rounded-full px-2 py-0.5">
+                        Research
+                      </span>
+                    )}
+                    {project.comingSoon ? (
+                      <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground border border-border rounded-full px-2 py-0.5">
+                        Soon
+                      </span>
+                    ) : (
+                      <ArrowUpRight
+                        size={18}
+                        className="text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200"
+                      />
+                    )}
+                  </div>
                 </div>
-                <h3 className="text-lg font-bold text-foreground mb-1 group-hover:text-primary transition-colors font-display">
+                <h3 className="text-lg font-semibold text-foreground mb-1 group-hover:text-primary transition-colors">
                   {project.title}
                 </h3>
                 <p className="text-xs text-muted-foreground font-mono mb-3">{project.subtitle}</p>
-                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{project.description}</p>
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed flex-1">{project.description}</p>
                 <div className="flex flex-wrap gap-2">
                   {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground text-[11px] font-medium"
-                    >
+                    <span key={tag} className="px-2.5 py-1 rounded-md bg-secondary font-mono text-[11px] text-secondary-foreground">
                       {tag}
                     </span>
                   ))}
